@@ -15,13 +15,7 @@ module.exports = db.define('user', {
     salt: {
         type: Sequelize.STRING
     },
-    twitter_id: {
-        type: Sequelize.STRING
-    },
-    facebook_id: {
-        type: Sequelize.STRING
-    },
-    google_id: {
+    github_id: {
         type: Sequelize.STRING
     }
 }, {
