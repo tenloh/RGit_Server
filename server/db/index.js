@@ -10,10 +10,10 @@ const Event = require('./models/event');
 const Comment = require('./models/comment');
 const File = require('./models/file');
 
-User.hasMany(Channel);
+User.belongsToMany(Channel, {through: 'User_Channel'});
 User.hasMany(Event);
 
-Channel.hasMany(User);
+Channel.belongsToMany(User, {through: 'User_Channel'});
 
 Branch.hasMany(Event);
 
