@@ -1,9 +1,25 @@
 'use strict';
-var db = require('./_db');
+const db = require('./_db');
 module.exports = db;
 
 // eslint-disable-next-line no-unused-vars
-var User = require('./models/user');
+const User = require('./models/user');
+const Channel = require('./models/channel');
+const Branch = require('./models/branch');
+const Event = require('./models/event');
+const Comment = require('./models/comment');
+const File = require('./models/file');
 
-// if we had more models, we could associate them in this file
-// e.g. User.hasMany(Reports)
+User.belongsToMany(Channel, {through: 'User_Channel'});
+User.hasMany(Event);
+
+Channel.belongsToMany(User, {through: 'User_Channel'});
+
+Branch.hasMany(Event);
+
+File.hasMany(Event);
+
+Event.belongsTo(User);
+
+
+
