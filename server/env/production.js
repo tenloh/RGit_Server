@@ -24,6 +24,11 @@ module.exports = {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_CALLBACK_URL
     },
+    GITHUB: {
+      clientID: process.env.GITHUB.clientID,
+      clientSecret: process.env.GITHUB.clientSecret,
+      callbackURL: process.env.GITHUB.callbackURL,
+    },
     LOGGING: true,
     NATIVE: true
 };
