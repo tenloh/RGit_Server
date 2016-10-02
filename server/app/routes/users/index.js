@@ -6,13 +6,13 @@ const User = db.model('user');
 module.exports = router;
 
 
-var ensureAuthenticated = function (req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    } else {
-        res.status(401).end();
-    }
-};
+// var ensureAuthenticated = function (req, res, next) {
+//     if (req.isAuthenticated()) {
+//         next();
+//     } else {
+//         res.status(401).end();
+//     }
+// };
 
 router.get('/', function (req, res, next) {
     User.findAll({})

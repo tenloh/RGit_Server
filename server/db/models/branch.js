@@ -2,8 +2,7 @@
 const Sequelize = require('sequelize');
 
 const db = require('../_db');
-const User = db.define('user');
-const Channel = db.define('channel');
+const User = db.model('user');
 
 let Branch = db.define('branch', {
   repoId: {
@@ -23,20 +22,23 @@ let Branch = db.define('branch', {
   classMethods: {
     //Find all channels and the related branches for a given user
     findAllForUser: function(userId){
-      return User.getChannels({
-        where: {
-          userId: userId
-        },
-        include: [Branch]
+      return User.findById(userId)
+      .then( user => {
+        return user.getChannels({
+          include: [Branch]
+        })
       })
-      .then( channels =>  channels ) 
+      .then( channels =>  {
+        return channels 
+      })
     },
     setRemote: function(branchId){
-      return User.update({
+      return Branch.update({
         local: false
-        }, { 
+        }, {
           where: {
-            id: branchId
+            id: branchId,
+            local: true
           }
         })
         .then( rowsUpdated => rowsUpdated)

@@ -3,9 +3,7 @@ const Sequelize = require('sequelize');
 
 const db = require('../_db');
 
-
-
-let Channel = db.define('channel', {
+const Channel = db.define('channel', {
   repoId: {
     type: Sequelize.STRING,
     allowNull: false
