@@ -16,10 +16,12 @@ User.hasMany(Event);
 Channel.belongsToMany(User, {through: 'User_Channel'});
 
 Branch.hasMany(Event);
+Branch.belongsTo(Channel);
 
 File.hasMany(Event);
 
 Event.belongsTo(User);
 
+Comment.belongsTo(User); // Each user can enter a comment
 
 
