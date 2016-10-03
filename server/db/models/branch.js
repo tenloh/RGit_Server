@@ -33,6 +33,7 @@ let Branch = db.define('branch', {
       })
     },
     setRemote: function(branchId){
+      //Set a branch from local to remote
       return Branch.update({
         local: false
         }, {
