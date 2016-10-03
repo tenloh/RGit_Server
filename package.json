@@ -68,5 +68,8 @@
     "socket.io": "^1.3.4",
     "socket.io-client": "^1.3.5",
     "supertest": "^0.15.0"
+  },
+  "devDependencies": {
+    "http-request": "^0.7.0"
   }
 }
