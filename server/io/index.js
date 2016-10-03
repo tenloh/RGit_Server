@@ -18,7 +18,7 @@ module.exports = function (server) {
 				where: {
 					name: loginName
 				},
-				include: [ model: Channel ]
+				include: [ Channel ]
 			}) 
 				.then(function(loggingUser) {
 					return loggingUser.channels.forEach(channel=> {
