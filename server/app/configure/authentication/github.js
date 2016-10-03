@@ -16,7 +16,6 @@ module.exports = function (app, db) {
     };
 
     var verifyCallback = function (accessToken, refreshToken, profile, done) {
-
         User.findOne({
                 where: {
                     github_id: profile.id
@@ -51,6 +50,7 @@ module.exports = function (app, db) {
         passport.authenticate('github', {failureRedirect: '/login'}),
         function (req, res) {
             res.redirect('/');
+            // res.json()
         });
 
 };

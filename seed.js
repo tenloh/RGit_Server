@@ -66,11 +66,9 @@ let seedChannel = function () {
             settingsForChannel: 'moreSettingsForChannel'
         },
     ];
-
     let creatingChannels = channels.map(function (channelObj) {
         return Channel.create(channelObj);
     });
-
     return Promise.all(creatingChannels);
 };
 
