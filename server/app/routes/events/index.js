@@ -2,6 +2,9 @@
 var router = require('express').Router();
 var db = require('../../../db');
 const Event = db.model('event');
+const User  = db.model('user');
+const Branch = db.model('branch');
+const File = db.model('file');
 //eslint-disable-line new-cap
 module.exports = router;
 
@@ -14,8 +17,53 @@ var ensureAuthenticated = function (req, res, next) {
     }
 };
 
+//Router Params for eventId
+router.param('eventId', function (req, res, next, id) {
+	    Event.findOne({
+            where: {
+                id: req.params.eventId
+            },
+            include: [User, Branch, File]
+        })
+        .then(event => {
+            req.event = event
+            next();
+        })
+		.catch(next);
+});
+
+//Get specific Event
+router.get('/:eventId', function (req, res, next){
+    res.json(req.event);
+})
+
+
+//Get all events for all repos
 router.get('/', function (req, res, next) {
     Event.findAll({})
     .then( events => res.json(events) )
     .catch(next)
 });
+
+//Create an Event
+//Assume that events come with saveDetails, userId, branchId, and fileId
+router.post('/', function(req, res, next){
+    Event.create({
+        saveDetails: req.body.saveDetails,
+        timeOfSave: new Date()
+    })
+    .then(event => {
+        return Promise.all([event.setUser(req.body.userId), event.setBranch(req.body.branchId), event.setFile(req.body.fileId)])
+    })
+    .then(event => res.json(event[0]))
+    .catch(next)
+})
+
+
+//Remove a event from being tracked (deleted)
+router.delete('/:eventId', function(req, res, next){
+    req.event.destroy()
+    .then( () => res.sendStatus(204))
+    .catch(next)
+});
+
