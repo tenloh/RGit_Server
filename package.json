@@ -29,6 +29,7 @@
     "eslint-config-fullstack": "^1.5.0",
     "express": "^4.12.0",
     "express-session": "^1.10.3",
+    "github-api": "^2.3.0",
     "gulp": "^3.8.11",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.5.2",
@@ -62,6 +63,7 @@
     "pg": "^4.5.5",
     "pg-hstore": "^2.3.2",
     "pg-native": "^1.10.0",
+    "request-promise": "^4.1.1",
     "run-sequence": "^1.0.2",
     "sequelize": "^3.23.3",
     "serve-favicon": "^2.2.0",
@@ -71,6 +73,7 @@
     "supertest": "^0.15.0"
   },
   "devDependencies": {
+    "github-token-user": "^3.0.0",
     "http-request": "^0.7.0"
   }
 }
