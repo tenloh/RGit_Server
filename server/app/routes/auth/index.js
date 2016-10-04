@@ -1,6 +1,9 @@
 'use strict'
-import http from 'http-request'
+import request from 'request'
+import githubTokenUser from 'github-token-user'
+import rp from 'request-promise'
 const router = require('express').Router()
+const User = require('../../../db/models/user.js')
 
 const githubConfig = {
 	clientId: 'afd403668b69ee8101fc',
@@ -11,19 +14,44 @@ const githubConfig = {
 module.exports = router
 
 router.post('/github', ( req, res, next ) => {
-	let postObject = {
-		client_id: githubConfig.clientId,
-		clientSecret: githubConfig.clientSecret,
-		code: req.body.code
+	let token, username
+	console.log(req.body)
+	let options = {
+		method: 'post',
+		body: {
+			client_secret: githubConfig.clientSecret,
+			client_id: githubConfig.clientId,
+			code: req.body.code
+		},
+		json: true,
+		url: 'https://github.com/login/oauth/access_token'
 	}
 
-	return http.post('https://github.com/login/oauth/access_token', postObject)
-		.end( ( err, response ) => {
-			if (response && response.ok) {
-				res.send(response)
-			} else {
-				res.send(404)
-			}
-		})
+	return rp(options)
+		.then(response => {
+			console.log('GitHub Login Response: ' + response)
+			token = response.access_token
 
+			return githubTokenUser(token)
+		})
+		.then(user => {
+			let username = user.login
+			//TOCHANGE: have this eager-load other stuff: channels, files, etc
+			//TOCHANGE: also have it correctly create once db works
+			// return User.findOrCreate({
+			// 	where: {
+			// 		name: username
+			// 	}
+			// })
+			return username
+		})
+		.then(createdUser => {
+			console.log(createdUser)
+			let responseObj = { username, token }
+			res.send(responseObj)
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(500).send(err)
+		})
 })
