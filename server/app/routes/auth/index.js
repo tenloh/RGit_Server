@@ -38,12 +38,11 @@ router.post('/github', ( req, res, next ) => {
 			let username = user.login
 			//TOCHANGE: have this eager-load other stuff: channels, files, etc
 			//TOCHANGE: also have it correctly create once db works
-			// return User.findOrCreate({
-			// 	where: {
-			// 		name: username
-			// 	}
-			// })
-			return username
+			return User.findOrCreate({
+				where: {
+					name: username
+				}
+			})
 		})
 		.then(createdUser => {
 			console.log(createdUser)
