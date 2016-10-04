@@ -29,13 +29,12 @@ router.post('/github', ( req, res, next ) => {
 
 	return rp(options)
 		.then(response => {
-			console.log('GitHub Login Response: ' + response)
 			token = response.access_token
 
 			return githubTokenUser(token)
 		})
 		.then(user => {
-			let username = user.login
+			username = user.login
 			//TOCHANGE: have this eager-load other stuff: channels, files, etc
 			//TOCHANGE: also have it correctly create once db works
 			return User.findOrCreate({
