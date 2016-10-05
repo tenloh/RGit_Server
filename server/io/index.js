@@ -8,6 +8,7 @@ module.exports = function (server) {
 
     if (io) return io;
 
+	console.log('in io!!!!!')
     io = socketio(server);
 
     io.on('connection', function (socket) {
@@ -18,7 +19,7 @@ module.exports = function (server) {
 				where: {
 					name: loginName
 				},
-				include: [ model: Channel ]
+				include: [ Channel ]
 			}) 
 				.then(function(loggingUser) {
 					return loggingUser.channels.forEach(channel=> {
