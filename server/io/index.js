@@ -2,7 +2,9 @@
 var socketio = require('socket.io');
 var io = null;
 const User = '../db/models/user.js'
-const Channel = '../db/models/user.js'
+const Channel = '../db/models/channel.js'
+const Branch = '../db/models/branch.js'
+const Promise = require('bluebird');
 
 module.exports = function (server) {
 
@@ -30,10 +32,54 @@ module.exports = function (server) {
 		})
 
 		socket.on('fileChanges', function(payload) {
-			io.to(payload.channel).emit('fileChanges', payload)
+			//Send payload to relevant channel members
+			io.to(payload.channel).emit('fileChanges', payload);
+			let currentUser = payload.username;
+			let event = payload.event;
+			let channel = payload.channel;
+			//Parsing payload and storing in the database:
+
+			/*Branches file structure
+				branch: [Array of Branches]
+
+				each individual branch:
+					commit <-- string for commit hash
+					current: <--- false or true
+					label: <--- label for most recent commit
+					name: <-- branch name
+			*/
+			let promisifiedBranchCalls = [];
+			//Find or create all the branches in the user's branches
+			payload.branch.forEach(b => {
+				promisifiedBranchCalls.push(Branch.findOrCreate({
+					where: { 
+						branchName: b,
+						channel: channel
+					}
+				}))
+			})
+
+			Promise.all[promisifiedBranchCalls]
+			.then( (arrayOfResolvedPromises) => {
+				let promisifiedAddingUserToBranch = [];
+				//Each element (e) is an array, item and created or not
+				arrayOfResolvedPromises.forEach(e => {
+					if(e[1]) {
+						promisifiedAddingUserToBranch.push(e[0].addUser(
+							{
+							where: {
+								name: currentUser
+							}
+						}))
+					}
+				})
+			})
+
+
 		})
     });
 
     return io;
 
 };
+
