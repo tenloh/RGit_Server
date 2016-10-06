@@ -30,6 +30,7 @@ File.belongsTo(Branch);
 Event.belongsTo(User);
 Event.belongsTo(File);
 Event.belongsTo(Branch);
+Event.belongsTo(Channel);
 
 Comment.belongsTo(User); // Each user can enter a comment
 Comment.belongsTo(File);

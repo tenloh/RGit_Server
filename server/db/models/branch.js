@@ -11,15 +11,9 @@ let Branch = db.define('branch', {
   branchName: {
     type: Sequelize.STRING
   },
-  dateOfLastUpdate: {
-    type: Sequelize.DATE
-  },
   local: {
     type: Sequelize.BOOLEAN,
     defaultValue: true
-  },
-  fileName: {
-    type: Sequelize.STRING
   }
 }, {
   classMethods: {

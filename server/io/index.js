@@ -78,13 +78,14 @@ module.exports = function (server) {
 					let promisifiedDiffCalls = []
 					for(let key in payload.diff){
 						payload.diff[key].forEach(linesArray => {
+							console.log('Key is: ' + key + ' and linesArray is: ' + linesArray);
 							promisifiedDiffCalls.push(Event.findOrCreate({
 								where: {
 									lineStart: linesArray[0],
 									lineEnd: linesArray[1],
 									userId: user.id,
 									eventType: event,
-									fileName: fileName,
+									fileName: channel.repoId + '/' + key,
 									branchName: currentBranch,
 								}
 							}))
