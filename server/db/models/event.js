@@ -4,12 +4,19 @@ const Sequelize = require('sequelize');
 const db = require('../_db');
 
 module.exports = db.define('event', {
-  timeOfSave: {
-    type: Sequelize.DATE,
-    allowNull: false
+  lineStart: {
+    type: Sequelize.INTEGER,
   },
-  saveDetails: {
-    type: Sequelize.JSON,
-    allowNull: false
+  lineEnd: {
+    type: Sequelize.INTEGER,
+  },
+  eventType: {
+    type: Sequelize.STRING,
+  },
+  branchName: {
+    type: Sequelize.STRING,
+  },
+  fileName: {
+    type: Sequelize.STRING,
   }
 })

@@ -1,7 +1,10 @@
 'use strict'
-import request from 'request'
-import githubTokenUser from 'github-token-user'
-import rp from 'request-promise'
+// import request from 'request'
+// import githubTokenUser from 'github-token-user'
+// import rp from 'request-promise'
+const request = require('request');
+const githubTokenUser = require('github-token-user')
+const rp = require('request-promise');
 const router = require('express').Router()
 const User = require('../../../db/models/user.js')
 
