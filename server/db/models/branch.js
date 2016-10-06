@@ -17,6 +17,9 @@ let Branch = db.define('branch', {
   local: {
     type: Sequelize.BOOLEAN,
     defaultValue: true
+  },
+  fileName: {
+    type: Sequelize.STRING
   }
 }, {
   classMethods: {

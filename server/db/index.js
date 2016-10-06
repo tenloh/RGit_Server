@@ -13,6 +13,7 @@ const File = require('./models/file');
 User.belongsToMany(Channel, {through: 'User_Channel'});
 User.hasMany(Event);
 User.hasMany(Comment);
+User.belongsToMany(Branch, {through: 'User_Branch'});
 
 Channel.belongsToMany(User, {through: 'User_Channel'});
 Channel.hasMany(Branch);
@@ -20,6 +21,7 @@ Channel.hasMany(Branch);
 Branch.hasMany(Event);
 Branch.belongsTo(Channel);
 Branch.hasMany(File);
+Branch.belongsToMany(User, {through: 'User_Branch'});
 
 File.hasMany(Event);
 File.hasMany(Comment);
