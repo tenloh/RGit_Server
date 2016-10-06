@@ -14,6 +14,7 @@ const githubConfig = {
 module.exports = router
 
 router.post('/github', ( req, res, next ) => {
+	console.log('got request')
 	let token, username
 	console.log(req.body)
 	let options = {
@@ -44,8 +45,10 @@ router.post('/github', ( req, res, next ) => {
 			})
 		})
 		.then(createdUser => {
-			console.log(createdUser)
-			let responseObj = { username, token }
+			let parsedUser = JSON.parse(JSON.stringify(createdUser))
+			let id = parsedUser[0].id
+			let responseObj = { username, token, id }
+
 			res.send(responseObj)
 		})
 		.catch(err => {
