@@ -48,10 +48,10 @@ module.exports = function (server) {
 			let event = payload.event;
 			let channel = payload.channel;
 			let fileName = payload.filepath;
-
+			let	currentBranch = payload.branch.current;
 			//Find all the sequelize objects for current user, channel, and fileName
 			let mainObjectsPromiseArray = [];
-			let user, room, file, currentBranch;
+			let user, room, file;
 			mainObjectsPromiseArray.push(User.findOne({where:{ name: currentUser}}));
 			mainObjectsPromiseArray.push(Channel.findOne({where: {repoId: channel}}));
 			mainObjectsPromiseArray.push(File.findOrCreate({where: {fileName: fileName}}));	
@@ -61,7 +61,6 @@ module.exports = function (server) {
 				channel = objArray[1];
 				file = objArray[2];
 				let promisifiedBranchCalls = [];
-				currentBranch = payload.branch.current;
 				//Find or create all the branches in the user's branches
 				payload.branch.all.forEach(b => {
 					promisifiedBranchCalls.push(Branch.findOrCreate({
@@ -87,6 +86,7 @@ module.exports = function (server) {
 									eventType: event,
 									fileName: channel.repoId + '/' + key,
 									branchName: currentBranch,
+									channelId: channel.id
 								}
 							}))
 						})
@@ -99,6 +99,7 @@ module.exports = function (server) {
 							fileName: file.id,
 							eventType: event,
 							branchName: currentBranch.name,
+							channelId: channel.id
 						}
 					})
 				}
@@ -113,9 +114,10 @@ module.exports = function (server) {
 			let notification = {
 				currentUser: currentUser,
 				event: event,
-				fileName: fileName
+				fileName: fileName,
+				branchName: currentBranch
 			};
-
+			console.log('Notification Object', notification);
 			io.to(payload.channel).emit('fileChanges', notification);
 
 			// //Parsing payload and storing in the database:

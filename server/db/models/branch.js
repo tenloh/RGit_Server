@@ -5,9 +5,6 @@ const db = require('../_db');
 const User = db.model('user');
 
 let Branch = db.define('branch', {
-  repoId: {
-    type: Sequelize.STRING
-  },
   branchName: {
     type: Sequelize.STRING
   },
