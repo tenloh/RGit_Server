@@ -23,15 +23,17 @@ var ensureAuthenticated = function (req, res, next) {
 //Due to de-limiting, file paths will come in with * instead of /
 router.param('fileId', function (req, res, next, id) {
         req.params.fileId = req.params.fileId.split('*').join('/');
+        req.query.repoId = req.query.repoId.split('*').join('/');
         Channel.findOne({
             where: {
-                repoId: req.query.repoName
+                repoId: req.query.repoId
             }
         })
         .then(channel => {
             return File.findOne({
                 where: {
-                    fileName: req.params.fileId
+                    fileName: req.params.fileId,
+                    channelId: channel.id
                 },
                 include: [ {
                     model: Event,
