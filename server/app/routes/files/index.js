@@ -61,19 +61,30 @@ router.get('/', function (req, res, next) {
 });
 
 //Remove a file from being tracked (deleted)
-router.delete('/:fileId', function(req, res, next){
-    req.file.destroy()
-    .then( () => res.sendStatus(204))
+router.delete('/', function(req, res, next){
+    File.find({where: {
+        fileName: req.body.fileName,
+        repoId: req.body.repoId
+    }})
+    .then(result => {
+        return result.removeUser([req.body.userId])
+    })
+    .then(() => res.sendStatus(204))
     .catch(next)
+
+
 });
 
 //Add a file to be tracked
 //Expect there to be file object with name and which branch it belongs to
 router.post('/', function(req, res, next){
-    File.create({
-        fileName: req.body.file.name,
-        branch: req.body.file.branch
-    })
-    .then(file => res.json(file))
+    File.findOrCreate({where: {
+        fileName: req.body.fileName,
+        repoId: req.body.repoId
+    }})
+    .then(file => file[0].addUsers([req.body.userId]))
+    .then(checkedOutFile => res.json(checkedOutFile))
     .catch(next)
+    // .then(file => res.json(file))
+    // .catch(next)
 })

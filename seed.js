@@ -129,7 +129,8 @@ let seedFile = function () {
     ];
 
     let creatingFile = files.map(function (fileObj) {
-        return File.create(fileObj);
+        return File.create(fileObj)
+        .then(result => result.setUsers([1]));
     });
 
     return Promise.all(creatingFile);
