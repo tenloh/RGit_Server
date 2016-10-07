@@ -27,22 +27,22 @@ router.get('/', function (req, res, next) {
 });
 
 //Get all channels for a given user
-router.get('/:userId', function (req, res, next) {
-    Channel.find({
-        where: {
-            userId: req.params.userId
-        }
-    })
-        .then(channels => res.json(channels))
-        .catch(next)
-});
+// router.get('/:userId', function (req, res, next) {
+//     Channel.find({
+//         where: {
+//             userId: req.params.userId
+//         }
+//     })
+//         .then(channels => res.json(channels))
+//         .catch(next)
+// });
 
 //Add a channel for a given user - It is assumed you cannot add a channel without any users
 //Assume req.body has channel object
 router.post('/:userId', function (req, res, next) {
     Channel.findOrCreate({
         where: {
-            repoId: req.body.channel.repoId
+            repoId: req.body.repoId
         }
     }).spread(function (channel, created) {
         if (!created) return channel.addUser(req.params.userId);
@@ -65,7 +65,16 @@ router.delete('/:channelId', function (req, res, next) {
 //Remove a user from a channel
 //Query should have userId and channelId
 router.put('/remove', function (req, res, next) {
-    Channel.removeUser(req.query.channelId, req.query.userId)
-        .then((channel) => res.json(channel))
-        .catch(next)
+	console.log(req.query)
+	Channel.findOne({
+		where: {
+			repoId: req.query.channelId
+		}
+	})
+		.then(channel => channel.removeUser(req.query.userId))
+		.then(() => res.send(204))
+		.catch(next)
+    // Channel.removeUser(req.query.channelId, req.query.userId)
+    //     .then((channel) => res.json(channel))
+    //     .catch(next)
 });

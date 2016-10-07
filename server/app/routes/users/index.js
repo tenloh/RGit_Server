@@ -2,6 +2,7 @@
 var router = require('express').Router();
 var db = require('../../../db');
 const User = db.model('user');
+const Channel = db.model('channel')
 //eslint-disable-line new-cap
 module.exports = router;
 
@@ -19,3 +20,9 @@ router.get('/', function (req, res, next) {
     .then( users => res.json(users) )
     .catch(next)
 });
+
+router.get('/:userId', function(req, res, next) {
+	User.findById(req.params.userId, { include: [Channel]} )
+		.then( user => res.json(user))
+		.catch(next)
+})
