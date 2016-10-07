@@ -56,8 +56,12 @@ router.delete('/:fileId', function(req, res, next){
 router.post('/', function(req, res, next){
     File.create({
         fileName: req.body.file.name,
-        branch: req.body.file.branch
+        branch: req.body.file.branch,
+        repoId: req.body.repoId
     })
-    .then(file => res.json(file))
+    .then(file => file.setUser(req.body.userId))
+    .then(checkedOutFile => res.json(checkedOutFile))
     .catch(next)
+    // .then(file => res.json(file))
+    // .catch(next)
 })
