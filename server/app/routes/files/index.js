@@ -5,6 +5,8 @@ const File = db.model('file');
 const Event = db.model('event');
 const Comment = db.model('comment');
 const Branch = db.model('branch');
+const User = db.model('user');
+const Channel = db.model('channel');
 //eslint-disable-line new-cap
 module.exports = router;
 
@@ -18,12 +20,26 @@ var ensureAuthenticated = function (req, res, next) {
 };
 
 //Router Params for fileId
+//Due to de-limiting, file paths will come in with * instead of /
 router.param('fileId', function (req, res, next, id) {
-	    File.findOne({
+        req.params.fileId = req.params.fileId.split('*').join('/');
+        req.query.repoId = req.query.repoId.split('*').join('/');
+        Channel.findOne({
             where: {
-                id: req.params.fileId
-            },
-            include: [Event, Comment, Branch]
+                repoId: req.query.repoId
+            }
+        })
+        .then(channel => {
+            return File.findOne({
+                where: {
+                    fileName: req.params.fileId,
+                    channelId: channel.id
+                },
+                include: [ {
+                    model: Event,
+                    include: [User, Branch, Channel]
+                }]
+            })
         })
         .then(file => {
             req.file = file

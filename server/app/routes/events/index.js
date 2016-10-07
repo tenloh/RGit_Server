@@ -5,6 +5,7 @@ const Event = db.model('event');
 const User  = db.model('user');
 const Branch = db.model('branch');
 const File = db.model('file');
+const Channel = db.model('channel');
 //eslint-disable-line new-cap
 module.exports = router;
 
@@ -31,6 +32,20 @@ router.param('eventId', function (req, res, next, id) {
         })
 		.catch(next);
 });
+
+// //Routes to get events for a given file
+// router.put('/file/:fileId', function (req, res, next){
+//     Event.findAll({
+//         where:{
+//             fileName: req.body.fileName
+//         },
+//         include: [User, Branch, File, Channel],
+//         limit: 10,
+//         order: [['createdAt', 'DESC']]
+//     })
+//     .then(events => res.json(events))
+//     .catch(next)
+// })
 
 //Get specific Event
 router.get('/:eventId', function (req, res, next){
