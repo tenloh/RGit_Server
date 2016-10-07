@@ -9,6 +9,7 @@ const Branch = require('./models/branch');
 const Event = require('./models/event');
 const Comment = require('./models/comment');
 const File = require('./models/file');
+// const Checkout = require('./models/checkout');
 
 User.belongsToMany(Channel, {through: 'User_Channel'});
 User.hasMany(Event);
@@ -26,6 +27,7 @@ Branch.belongsToMany(User, {through: 'User_Branch'});
 File.hasMany(Event);
 File.hasMany(Comment);
 File.belongsTo(Branch);
+File.hasMany(User); //KT: added for checkout feature
 
 Event.belongsTo(User);
 Event.belongsTo(File);
