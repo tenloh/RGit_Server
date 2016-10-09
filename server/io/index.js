@@ -32,6 +32,8 @@ module.exports = function (server) {
 			}) 
 				.then(function(loggingUser) {
 					console.log('logged in user', loggingUser);
+					console.log('logging user channels', loggingUser.channels);
+					console.log('logging in channels false?', loggingUser.channels === true);
 					if (loggingUser.channels) {
 						console.log('USER CHANNELS', loggingUser.channels);
 						loggingUser.channels.forEach(channel=> {
