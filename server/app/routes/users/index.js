@@ -22,7 +22,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/:userId', function(req, res, next) {
-	User.findById(req.params.userId, { include: [Channel]} )
+	User.findById(req.params.userId, { include: [{model: Channel, include: [User]}]} )
 		.then( user => res.json(user))
 		.catch(next)
 })
