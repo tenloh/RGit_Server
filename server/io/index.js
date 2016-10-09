@@ -33,10 +33,12 @@ module.exports = function (server) {
 				.then(function(loggingUser) {
 					console.log('logged in user', loggingUser);
 					if (loggingUser.channels) {
+						console.log('USER CHANNELS', loggingUser.channels);
 						loggingUser.channels.forEach(channel=> {
 							//TOCHANGE: need to include reponame in db, or change
 							//how things are being stored client-side
-							socket.join(channel.repoName)		
+							console.log('Joining a socket channel', channel.repoId);
+							socket.join(channel.repoId)		
 						})
 					}
 				})
