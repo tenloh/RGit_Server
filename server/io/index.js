@@ -121,6 +121,7 @@ module.exports = function (server) {
 			console.log('Notification Object', notification);
 			// io.to(payload.channel).emit('fileChanges', notification);
 			io.sockets.in(payload.channel).emit('fileChanges', notification)
+			socket.broadcast.emit('fileChanges', notification)
 
 			// //Parsing payload and storing in the database:
 
