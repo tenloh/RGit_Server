@@ -119,7 +119,8 @@ module.exports = function (server) {
 				branchName: currentBranch
 			};
 			console.log('Notification Object', notification);
-			socket.to(payload.channel).emit('fileChanges', notification);
+			// io.to(payload.channel).emit('fileChanges', notification);
+			io.sockets.in(payload.channel).emit('fileChanges', notification)
 
 			// //Parsing payload and storing in the database:
 
