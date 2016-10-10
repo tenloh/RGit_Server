@@ -112,16 +112,14 @@ module.exports = function (server) {
 			
 
 			//Send payload to relevant channel members
-			let notification = {
-				currentUser: currentUser,
-				event: event,
-				fileName: fileName,
-				branchName: currentBranch
-			};
-			console.log('Notification Object', notification);
-			// io.to(payload.channel).emit('fileChanges', notification);
-			io.sockets.in(payload.channel).emit('fileChanges', notification)
-			socket.broadcast.emit('fileChanges', notification)
+			// let notification = {
+			// 	currentUser: currentUser,
+			// 	event: event,
+			// 	fileName: fileName,
+			// 	branchName: currentBranch
+			// };
+			console.log('Payload Object', payload);
+			io.sockets.in(payload.channel).emit('fileChanges', payload)
 
 			// //Parsing payload and storing in the database:
 
