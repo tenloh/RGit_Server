@@ -17,7 +17,7 @@ module.exports = function (server) {
 
     io = socketio(server);
 
-    io.on('connection', function (socket) {
+    io.sockets.on('connection', function (socket) {
 		let loggedUser;
 		socket.on('passLogin', function(loginName) {
 			loggedUser = loginName
@@ -119,8 +119,7 @@ module.exports = function (server) {
 				branchName: currentBranch
 			};
 			console.log('Notification Object', notification);
-			// io.to(payload.channel).emit('fileChanges', notification);
-			io.sockets.in(payload.channel).emit('fileChanges', notification)
+			socket.to(payload.channel).emit('fileChanges', notification);
 
 			// //Parsing payload and storing in the database:
 
