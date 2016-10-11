@@ -48,33 +48,27 @@ router.post('/:userId', function (req, res, next) {
     let promiseArray = [channel];
     //Only used when no id can be found
     let user;
+	let channelInfo
     if(req.body.userName){
         user = User.findOrCreate({
             where: {
                 name: req.body.userName
             }
         })
-
     }
-
     Promise.all([channel, user])
     .then( responseArray => {
         //[[channel, created or not], [user, created]]
+		console.log(responseArray[0])
+		channelInfo = JSON.parse(JSON.stringify(responseArray[0]))
         if(req.body.userName) return responseArray[0][0].addUser(responseArray[1][0])
-        return responseArray[0][0].addUser(req.params.userId);
+		return responseArray[0][0].addUser(req.params.userId)
     })
     .then( channel => {
+		res.io.to(channelInfo[0].repoId).emit('reloadTeam', channelInfo[0].repoId)
         res.json(channel)
     })
     .catch(next)
-    // Channel.findOrCreate({
-    //     where: {
-    //         repoId: req.body.repoId
-    //     }
-    // }).spread(function (channel, created) {
-    //     return channel.addUser(req.params.userId);
-    // }).then(channel => res.json(channel))
-    //     .catch(next)
 });
 
 //Delete a channel
@@ -104,6 +98,7 @@ router.put('/remove', function (req, res, next) {
 		Promise.all(promiseArray)
         .then(resultArray => {
             let channel = resultArray[0];
+			res.io.to(req.query.channelId).emit('reloadTeam', req.query.channelId)
             if(req.query.userName) return channel.removeUser(resultArray[1]);
             return channel.removeUser(req.query.userId)
         })
