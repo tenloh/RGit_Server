@@ -11,6 +11,7 @@ const File = db.model('file');
 const _ = require('lodash');
 
 let rooms = {}
+let clients = {}
 
 module.exports = function (server) {
 
@@ -22,6 +23,7 @@ module.exports = function (server) {
 		let loggedUser;
 		socket.on('passLogin', function(loginName) {
 			loggedUser = loginName
+			clients[loginName] = socket
 			console.log(loggedUser + ' has logged in.')
 			return User.findOrCreate({
 				where: {
@@ -40,7 +42,7 @@ module.exports = function (server) {
 							rooms[channelName].push(loginName)	
 							console.log('Joining a socket channel', channelName);
 							socket.join(channelName)		
-							io.to(channelName).emit('refreshTeam', {currentlyOnline: rooms[channelName], channel: channelName} )
+							io.to(channelName).emit('refreshTeam', {currentlyOnline: rooms[channelName]} )
 						})
 					}
 				})
@@ -83,8 +85,7 @@ module.exports = function (server) {
 			// 			payload.diff[key].forEach(linesArray => {
 			// 				console.log('Key is: ' + key + ' and linesArray is: ' + linesArray);
 			// 				promisifiedDiffCalls.push(Event.findOrCreate({
-			// 					where: {
-			// 						lineStart: linesArray[0],
+			// 					where: { lineStart: linesArray[0],
 			// 						lineEnd: linesArray[1],
 			// 						userId: user.id,
 			// 						eventType: event,
@@ -139,22 +140,22 @@ module.exports = function (server) {
 
 		socket.on('disconnect', function() {
 
-			return User.findOrCreate({
-				where: {
-					name: loginName
-				},
-				include: [ Channel ]
-			}) 
-				.then(function(loggingUser) {
-					console.log('logged in user', loggingUser);
-					if (loggingUser[0].channels) {
-						loggingUser[0].channels.forEach(channel=> {
-							let channelName = channel.repoId
-							_.reject(rooms[channelName], user => user === loginName)
-							io.to(channelName).emit('refreshTeam', {currentlyOnline: rooms[channelName], channel: channelName } )
-						})
-					}
-				})
+			// return User.findOrCreate({
+			// 	where: {
+			// 		name: loggedUser
+			// 	},
+			// 	include: [ Channel ]
+			// }) 
+			// 	.then(function(loggingUser) {
+			// 		console.log('logged in user', loggingUser);
+			// 		if (loggingUser[0].channels) {
+			// 			loggingUser[0].channels.forEach(channel=> {
+			// 				let channelName = channel.repoId
+			// 				_.reject(rooms[channelName], user => user === loggedUser)
+			// 				io.to(channelName).emit('refreshTeam', {currentlyOnline: rooms[channelName], channel: channelName } )
+			// 			})
+			// 		}
+			// 	})
 			console.log(loggedUser + ' has logged out')
 		})
 
