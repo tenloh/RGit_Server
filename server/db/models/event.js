@@ -4,19 +4,19 @@ const Sequelize = require('sequelize');
 const db = require('../_db');
 
 module.exports = db.define('event', {
-  lineStart: {
+  origLineStart: {
     type: Sequelize.INTEGER,
   },
-  lineEnd: {
+  origLineEnd: {
+    type: Sequelize.INTEGER,
+  },
+  localLineStart: {
+    type: Sequelize.INTEGER,
+  },
+  localLineEnd: {
     type: Sequelize.INTEGER,
   },
   eventType: {
     type: Sequelize.STRING,
   },
-  branchName: {
-    type: Sequelize.STRING,
-  },
-  fileName: {
-    type: Sequelize.STRING,
-  }
 })
