@@ -10,7 +10,7 @@ module.exports = db.define('file', {
         allowNull: false
     },
     repoId: {
-      type: Sequelize.INTEGER
+      type: Sequelize.STRING
     }
 }, {
     defaultScope: {
