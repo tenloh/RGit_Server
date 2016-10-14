@@ -6,6 +6,7 @@ const User  = db.model('user');
 const Branch = db.model('branch');
 const File = db.model('file');
 const Channel = db.model('channel');
+const Promise = require('bluebird');
 //eslint-disable-line new-cap
 module.exports = router;
 
@@ -47,9 +48,36 @@ router.param('eventId', function (req, res, next, id) {
 //     .catch(next)
 // })
 
-//Get specific Event
-router.get('/:eventId', function (req, res, next){
-    res.json(req.event);
+//Get repo id from query
+router.get('/user/:username', function (req, res, next){
+    req.query.repoId = req.query.repoId.split('*').join('/');
+    let channelQuery = Channel.findOne({
+        where: {
+            repoId: req.query.repoId
+        }
+    })
+
+    let userQuery = User.findOne({
+        where: {
+            name: req.params.username
+        }
+    })
+
+    Promise.all([channelQuery, userQuery])
+    .spread( (channel, user) => {
+        return Event.findAll({
+            where:{
+                userId: user.id,
+                channelId: channel.id
+            },
+            include: [File],
+            limit: 3,
+            order: [['createdAt', 'DESC']]
+        })
+    })
+    .then(events => {
+        res.json(events);
+    })
 })
 
 
@@ -59,6 +87,11 @@ router.get('/', function (req, res, next) {
     .then( events => res.json(events) )
     .catch(next)
 });
+
+//Get specific Event
+router.get('/:eventId', function (req, res, next){
+    res.json(req.event);
+})
 
 //Create an Event
 //Assume that events come with saveDetails, userId, branchId, and fileId
