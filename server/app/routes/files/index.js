@@ -38,7 +38,9 @@ router.param('fileId', function(req, res, next, id) {
                 },
                 include: [{
                     model: Event,
-                    include: [User, Branch, Channel]
+                    include: [User, Branch, Channel],
+                    limit: 3,
+                    order: [['createdAt', 'DESC']]
                 }]
             })
         })

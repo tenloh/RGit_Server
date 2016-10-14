@@ -3,6 +3,7 @@ var router = require('express').Router();
 var db = require('../../../db');
 const User = db.model('user');
 const Channel = db.model('channel')
+const Event = db.model('event');
 //eslint-disable-line new-cap
 module.exports = router;
 
