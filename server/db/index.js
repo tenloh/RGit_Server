@@ -18,6 +18,7 @@ User.belongsToMany(Branch, {through: 'User_Branch'});
 
 Channel.belongsToMany(User, {through: 'User_Channel'});
 Channel.hasMany(Branch);
+Channel.hasMany(Event);
 
 Branch.hasMany(Event);
 Branch.belongsTo(Channel);

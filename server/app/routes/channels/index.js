@@ -4,6 +4,7 @@ var db = require('../../../db');
 const Promise = require('bluebird');
 const Channel = db.model('channel');
 const User = db.model('user');
+const Event = db.model('event');
 //eslint-disable-line new-cap
 module.exports = router;
 const io = require('../../../io')
@@ -27,16 +28,18 @@ router.get('/', function (req, res, next) {
         .catch(next)
 });
 
-//Get all channels for a given user
-// router.get('/:userId', function (req, res, next) {
-//     Channel.find({
-//         where: {
-//             userId: req.params.userId
-//         }
-//     })
-//         .then(channels => res.json(channels))
-//         .catch(next)
-// });
+// Get all channels for a given user
+router.get('/:channelName', function (req, res, next) {
+    req.params.channelName = req.params.channelName.split('*').join('/');
+    Channel.findOne({
+        where: {
+            repoId: req.params.channelName
+        },
+        include: [{model: Event, limit: 5, order: [['createdAt', 'DESC']], include: [User]}]
+    })
+        .then(channel => res.json(channel))
+        .catch(next)
+});
 
 //Add a channel for a given user - It is assumed you cannot add a channel without any users
 //Assume req.body has channel object
