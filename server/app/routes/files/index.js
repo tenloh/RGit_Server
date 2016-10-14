@@ -93,15 +93,14 @@ router.delete('/', function(req, res, next) {
 //Add a file to be tracked
 //Expect there to be file object with name and which branch it belongs to
 router.post('/', function(req, res, next) {
+	console.log("BODY ", req.body)
     File.findOrCreate({
             where: {
                 fileName: req.body.fileName,
                 repoId: req.body.repoId
             }
         })
-        .then(file => file[0].addUsers([req.body.userId]))
+        .then(file => file[0].addUser(req.body.userId))
         .then(checkedOutFile => res.json(checkedOutFile))
         .catch(next)
-        // .then(file => res.json(file))
-        // .catch(next)
 })
