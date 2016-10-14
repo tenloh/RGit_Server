@@ -27,7 +27,6 @@ Branch.belongsToMany(User, {through: 'User_Branch'});
 File.hasMany(Event);
 File.hasMany(Comment);
 File.belongsTo(Channel);
-File.hasMany(User); //KT: added for checkout feature
 
 File.belongsToMany(User, {through: 'User_File'})
 User.belongsToMany(File, {through: 'User_File'})

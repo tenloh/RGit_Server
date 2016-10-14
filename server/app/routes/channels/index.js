@@ -6,6 +6,7 @@ const Channel = db.model('channel');
 const User = db.model('user');
 //eslint-disable-line new-cap
 module.exports = router;
+const io = require('../../../io')
 
 
 var ensureAuthenticated = function (req, res, next) {
@@ -66,7 +67,8 @@ router.post('/:userId', function (req, res, next) {
     })
     .then( channel => {
 		res.io.to(channelInfo[0].repoId).emit('reloadTeam', channelInfo[0].repoId)
-		// res.io.to(clients[req.body.userName]).emit('reloadChannels', channelInfo[0].repoId)
+		let addedUser = io.getClient(req.body.userName)
+		res.io.to(addedUser).emit('reloadChannels', channelInfo[0].repoId)
         res.json(channel)
     })
     .catch(next)
@@ -100,7 +102,8 @@ router.put('/remove', function (req, res, next) {
         .then(resultArray => {
             let channel = resultArray[0];
 			res.io.to(req.query.channelId).emit('reloadTeam', req.query.channelId)
-			// res.io.to(clients[req.query.userName]).emit('reloadChannels ', channelInfo[0].repoId)
+			let addedUser = io.getClient(req.body.userName)
+			res.io.to(addedUser).emit('reloadChannels', req.query.channelId)
             if(req.query.userName) return channel.removeUser(resultArray[1]);
             return channel.removeUser(req.query.userId)
         })

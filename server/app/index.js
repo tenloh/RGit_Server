@@ -7,8 +7,8 @@ const socketio = ('socket.io')
 module.exports = function (db, server) {
 
 	app.use(function(req, res, next) {
-		const io = require('../io')(server)
-		res.io = io
+		const io = require('../io')
+		res.io = io.startIo(server)
 		next()
 	})
     // Pass our express application pipeline into the configuration
