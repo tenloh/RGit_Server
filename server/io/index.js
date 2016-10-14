@@ -42,7 +42,7 @@ module.exports = {
 								if (!rooms[channelName]) {
 									rooms[channelName] = []
 								}
-								if (!rooms[channelName].includes(loginName)) { 
+								if (!_.includes(rooms[channelName], loginName)) { 
 									rooms[channelName].push(loginName) 
 								}	
 								console.log('Joining a socket channel', channelName);
