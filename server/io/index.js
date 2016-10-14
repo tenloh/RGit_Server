@@ -24,6 +24,7 @@ module.exports = {
 		io.sockets.on('connection', function (socket) {
 			let loggedUser;
 			socket.on('passLogin', function (loginName) {
+				if (!loginName) return
 				loggedUser = loginName
 				clients[loginName] = socket
 				console.log(loggedUser + ' has logged in.')
@@ -41,17 +42,18 @@ module.exports = {
 								if (!rooms[channelName]) {
 									rooms[channelName] = []
 								}
-								rooms[channelName].push(loginName)	
+								if (!rooms[channelName].includes(loginName)) { 
+									rooms[channelName].push(loginName) 
+								}	
 								console.log('Joining a socket channel', channelName);
 								socket.join(channelName)		
-								io.to(channelName).emit('refreshTeam', {currentlyOnline: rooms[channelName]} )
+								socket.broadcast.to(channelName).emit('refreshOnline', {channelName, currentlyOnline: rooms[channelName]} )
 							})
 						}
 					})
 			})
 
 			socket.on('fileChanges', function (payload) {
-				console.log('PAYLOAD', payload);
 				const {username, event, channel, filepath} = payload;
 				let currentBranch = payload.branch.current;
 				//Find all the sequelize objects for current user, channel, and fileName
@@ -124,11 +126,31 @@ module.exports = {
 						console.error(err);
 					})
 
-				console.log('Payload Object', payload);
 				io.to(payload.channel).emit('fileChanges', payload)
 			})
 
 			socket.on('disconnect', function () {
+
+				return User.findOrCreate({
+					where: {
+						name: loggedUser
+					},
+					include: [Channel]
+				})
+					.then(function (loggingUser) {
+						console.log('logging out user', loggingUser);
+						if (loggingUser[0].channels) {
+							loggingUser[0].channels.forEach(channel=> {
+								let channelName = channel.repoId
+								_.remove(rooms[channelName], user => {
+									return user === loggedUser
+								})
+								socket.leave(channelName)
+								console.log('CURRENTLY ONLINE ', rooms[channelName])
+								socket.broadcast.to(channelName).emit('refreshOnline', {channelName, currentlyOnline: rooms[channelName]} )
+							})
+						}
+					})
 				console.log(loggedUser + ' has logged out')
 			})
 
