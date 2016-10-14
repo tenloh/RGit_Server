@@ -70,6 +70,7 @@ router.get('/user/:username', function (req, res, next){
                 userId: user.id,
                 channelId: channel.id
             },
+            include: [File],
             limit: 3,
             order: [['createdAt', 'DESC']]
         })
