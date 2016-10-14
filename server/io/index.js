@@ -47,7 +47,6 @@ module.exports = {
 								}	
 								console.log('Joining a socket channel', channelName);
 								socket.join(channelName)		
-								console.log('CURRENTLY ONLINE ', rooms[channelName])
 								socket.broadcast.to(channelName).emit('refreshOnline', {channelName, currentlyOnline: rooms[channelName]} )
 							})
 						}
@@ -55,7 +54,6 @@ module.exports = {
 			})
 
 			socket.on('fileChanges', function (payload) {
-				console.log('PAYLOAD', payload);
 				const {username, event, channel, filepath} = payload;
 				let currentBranch = payload.branch.current;
 				//Find all the sequelize objects for current user, channel, and fileName
@@ -128,7 +126,6 @@ module.exports = {
 						console.error(err);
 					})
 
-				console.log('Payload Object', payload);
 				io.to(payload.channel).emit('fileChanges', payload)
 			})
 
