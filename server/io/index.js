@@ -23,6 +23,11 @@ module.exports = {
 
 		io.sockets.on('connection', function (socket) {
 			let loggedUser;
+
+			socket.on('getOnline', channelName => {
+				socket.emit('refreshOnline', {channelName, currentlyOnline: rooms[channelName]})	
+			})
+
 			socket.on('passLogin', function (loginName) {
 				if (!loginName) return
 				loggedUser = loginName
