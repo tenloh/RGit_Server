@@ -5,6 +5,7 @@ const Promise = require('bluebird');
 const Channel = db.model('channel');
 const User = db.model('user');
 const Event = db.model('event');
+const Chat = db.model('chat');
 //eslint-disable-line new-cap
 module.exports = router;
 const io = require('../../../io')
@@ -28,14 +29,13 @@ router.get('/', function (req, res, next) {
         .catch(next)
 });
 
-// Get all channels for a given user
 router.get('/:channelName', function (req, res, next) {
     req.params.channelName = req.params.channelName.split('*').join('/');
     Channel.findOne({
         where: {
             repoId: req.params.channelName
         },
-        include: [{model: Event, limit: 5, order: [['createdAt', 'DESC']], include: [User]}]
+        include: [{model: Chat} ,{model: Event, limit: 5, order: [['createdAt', 'DESC']], include: [User]}]
     })
         .then(channel => res.json(channel))
         .catch(next)
