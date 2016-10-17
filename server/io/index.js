@@ -65,15 +65,17 @@ module.exports = {
 				let message = body.message
 				let channelName = body.channelName
 				let user, chat
-				return Promise.all([Chat.create({message}), User.findOne({ where: { name: loggedUser }})])
+				console.log(loggedUser)
+				return Promise.all([Chat.create({message}), User.findOne({ where: { name: loggedUser }}), Channel.findOne({ where: { repoId: channelName }})])
 					.then(resultArr => {
-						chat = JSON.parse(JSON.stringify(resultArr[0]))
-					 	user = JSON.parse(JSON.stringify(resultArr[1]))
-						return Promise.all([chat.setUser(user.id), chat.setChannel(channelName)])
+						console.log(resultArr)
+						chat = resultArr[0]
+					 	user = resultArr[1]
+						let channel = resultArr[2]
+						return Promise.all([chat.setUser(user), chat.setChannel(channel)])
 					})
 					.then(() => {
-						//TODO: this broadcasts to send as well—change to socket.broadcast.to after testing
-						io.in(channelName).emit('receiveChat', {
+						socket.broadcast.to(channelName).emit('receiveChat', {
 							message, 
 							channelName, 
 							author: loggedUser, 
