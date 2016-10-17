@@ -9,8 +9,8 @@ const router = require('express').Router()
 const User = require('../../../db/models/user.js')
 
 const githubConfig = {
-	clientId: 'afd403668b69ee8101fc',
-	clientSecret: '5aaff4f4b4b85ab137e03d8add60a9561575f56f',
+	clientId: '02c613b6855930709237',
+	clientSecret: '663458b2eaf244d8c03a990ecf9d694101db3250',
 	callbackURL: 'http://127.0.0.1:1337/auth/github/callback'
 }
 
@@ -38,9 +38,8 @@ router.post('/github', ( req, res, next ) => {
 			return githubTokenUser(token)
 		})
 		.then(user => {
+			if (!user) throw new Error()
 			username = user.login
-			//TOCHANGE: have this eager-load other stuff: channels, files, etc
-			//TOCHANGE: also have it correctly create once db works
 			return User.findOrCreate({
 				where: {
 					name: username
