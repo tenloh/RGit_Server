@@ -4,6 +4,7 @@ var io = null;
 const Promise = require('bluebird');
 const db = require('../db')
 const User = db.model('user')
+const Chat = db.model('chat')
 const Channel = db.model('channel')
 const Branch = db.model('branch');
 const Event = db.model('event');
@@ -25,7 +26,8 @@ module.exports = {
 			let loggedUser;
 
 			socket.on('getOnline', channelName => {
-				socket.emit('refreshOnline', {channelName, currentlyOnline: rooms[channelName]})	
+				let currentlyOnline = rooms[channelName]
+				socket.emit('refreshOnline', {channelName, currentlyOnline})	
 			})
 
 			socket.on('passLogin', function (loginName) {
@@ -56,6 +58,32 @@ module.exports = {
 							})
 						}
 					})
+			})
+
+			//assumes server will be passed {channelName, message}
+			socket.on('sendChat', body => {
+				let message = body.message
+				let channelName = body.channelName
+				let user, chat
+				console.log(loggedUser)
+				return Promise.all([Chat.create({message}), User.findOne({ where: { name: loggedUser }}), Channel.findOne({ where: { repoId: channelName }})])
+					.then(resultArr => {
+						console.log(resultArr)
+						chat = resultArr[0]
+					 	user = resultArr[1]
+						let channel = resultArr[2]
+						return Promise.all([chat.setUser(user), chat.setChannel(channel)])
+					})
+					.then(() => {
+						socket.broadcast.to(channelName).emit('receiveChat', {
+							message, 
+							channelName, 
+							author: loggedUser, 
+							timeStamp: chat.createdAt, 
+							id: chat.id
+						})
+					})
+					.catch(err => console.error)
 			})
 
 			socket.on('fileChanges', function (payload) {

@@ -9,16 +9,21 @@ const Branch = require('./models/branch');
 const Event = require('./models/event');
 const Comment = require('./models/comment');
 const File = require('./models/file');
-// const Checkout = require('./models/checkout');
+const Chat = require('./models/chat');
 
 User.belongsToMany(Channel, {through: 'User_Channel'});
 User.hasMany(Event);
 User.hasMany(Comment);
+User.hasMany(Chat)
 User.belongsToMany(Branch, {through: 'User_Branch'});
 
 Channel.belongsToMany(User, {through: 'User_Channel'});
 Channel.hasMany(Branch);
 Channel.hasMany(Event);
+Channel.hasMany(Chat)
+
+Chat.belongsTo(User, {foreignKey: 'authorName', targetKey: 'name' })
+Chat.belongsTo(Channel)
 
 Branch.hasMany(Event);
 Branch.belongsTo(Channel);
