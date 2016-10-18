@@ -163,7 +163,7 @@ module.exports = {
 			})
 
 			socket.on('disconnect', function () {
-
+				if (!loggedUser) return
 				return User.findOrCreate({
 					where: {
 						name: loggedUser
